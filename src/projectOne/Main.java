@@ -2,6 +2,7 @@ package projectOne;
 
 import org.jsfml.window.*;
 import org.jsfml.window.Keyboard.Key;
+import org.jsfml.window.Mouse.Button;
 import org.jsfml.window.event.*;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -177,7 +178,12 @@ public class Main {
 					if (xFlag & !yFlag) mapSprite.setTextureRect(new IntRect(192,64,64,-64));
 					//Низ право
 					if (!xFlag & !yFlag) mapSprite.setTextureRect(new IntRect(256,64,-64,-64));
-					//mapSprite.setTextureRect(new IntRect(192,0,64,64));
+					//Обработчик движений по нажатию мышкой
+					if (Mouse.isButtonPressed(Button.LEFT)) {
+						player.xPos = mouseX*32;
+						player.yPos = mouseY*32;
+						player.update();
+					}
 					mapSprite.setPosition(vi.x*64, vi.y*64);
 					renderWindow.draw(mapSprite);
 					workField=0;
@@ -191,4 +197,3 @@ public class Main {
 		}
 	}
 }
-

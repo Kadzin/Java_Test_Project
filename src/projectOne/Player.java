@@ -32,4 +32,7 @@ class Player {
 		playerSkin.setTextureRect(intRect);
 		playerSkin.setPosition(xPos, yPos);
 	}
+	void update() {
+		playerSkin.setPosition(xPos, yPos);
+	}
 }
