@@ -64,10 +64,6 @@ public class Main {
 
 	
 	public static void main(String[] args) {		
-		/*//Создаём прямоугольник
-		Vector2f vector2f = new Vector2f(32, 32);		
-		RectangleShape rectangle = new RectangleShape(vector2f);
-		rectangle.setPosition(0, 0);*/
 		
 		//Задаём параметры окна и создаём его
 		VideoMode vm = new VideoMode(1024, 512);
@@ -76,11 +72,11 @@ public class Main {
 		//Создаем объект класса игрок
 		Player player = new Player();
 		
-		//Устанавливаем счётчки
+		//Устанавливаем счётчки времени
+		//В будущем может понадобиться
 		Clock clock = new Clock();
 		float time;
 		
-		//Скопированно снизу
 		//Задаем спрайт карты
 		Texture mapTexture = new Texture();
 		try {
@@ -89,11 +85,11 @@ public class Main {
 			ex.printStackTrace();
 		}
 		Sprite mapSprite = new Sprite(mapTexture);
+		
 		//Создаем вектор для позиции мыши
 		Vector2i vi = new Vector2i(0, 0);
 		int mouseX, mouseY, workField = 0;
 		boolean xFlag, yFlag;
-		
 		
 		//Всё что будет показано в окне будет в этом цикле
 		while (renderWindow.isOpen()){			
@@ -101,7 +97,6 @@ public class Main {
 			time = clock.getElapsedTime().asSeconds();
 			clock.restart();
 			time = time*500;
-			player.update(time);
 			
 			//Закрытие окна (если делать через wait, то программа стопается!)
 			for (Event myEvent : renderWindow.pollEvents()) {
@@ -158,7 +153,7 @@ public class Main {
 			//Переменная работает в качестве флага
 			workField = 0;
 			//Условия отображения поля под курсором
-			//+64 и -32 это одна клетка вокруг персонажа
+			//+64 и -32 это одна клетка вокруг персонажа ( * на скилл ренджа персонажа)
 			if(vi.x<(player.xPos+64) & vi.x>(player.xPos-32)) workField+=1;
 			if(vi.y<(player.yPos+64) & vi.y>(player.yPos-32)) workField+=1;
 			if(workField==2) {		
