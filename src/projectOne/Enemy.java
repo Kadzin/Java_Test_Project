@@ -3,13 +3,16 @@ package projectOne;
 import org.jsfml.graphics.*;
 import java.io.IOException;
 import java.nio.file.Paths;
+import projectOne.Main;
 
 public class Enemy {
 	
 	//«адаЄм текстуру игрока, а так же его положение и скорость
 	Sprite enemySkin;
-	float xPos = 512, yPos = 512;
+	float xPos = 128, yPos = 128;
 	IntRect intRect = new IntRect(0, 0, 32, 32);
+	private String[][] tileMapClass = Main.tileMap;
+	int xPosInt, yPosInt;
 		
 	//переменные из прошлой версии 
 	//float xSpeed = 0, ySpeed = 0;
@@ -32,34 +35,31 @@ public class Enemy {
 		enemySkin.setPosition(xPos, yPos);
 	}
 	void update(float playerXpos, float playerYpos) {
-		xPos/=32;
-		yPos/=32;
-		playerXpos/=32;
-		playerYpos/=32;
+		tileMapClass = Main.tileMap;
+		/*playerXpos/=32;
+		playerYpos/=32;*/
 		float xx, yy;
 		xx = playerXpos - xPos;
 		yy = playerYpos - yPos;
-		if (xx == 0 ) {
-			xPos*=32;			
-			}
 		if (xx > 0 ) {
-			xPos+=1;
-			xPos*=32;
+			xPos+=32;
+			xPosInt = (int) xPos/64;
+			if (tileMapClass[yPosInt][xPosInt] != " ") xPos-=32;
 			}
 		if (xx < 0 ) {
-			xPos-=1;
-			xPos*=32;
-		}
-		if (yy == 0 ) {
-			yPos*=32;
+			xPos-=32;
+			xPosInt = (int) xPos/64;
+			if (tileMapClass[yPosInt][xPosInt] != " ") xPos+=32;
 		}
 		if (yy > 0 ) {
-			yPos+=1;
-			yPos*=32;
+			yPos+=32;
+			yPosInt = (int) yPos/64;
+			if (tileMapClass[yPosInt][xPosInt] != " ") yPos-=32;
 		}
 		if (yy < 0 ) {
-			yPos-=1;
-			yPos*=32;
+			yPos-=32;
+			yPosInt = (int) yPos/64;
+			if (tileMapClass[yPosInt][xPosInt] != " ") yPos+=32;
 		}
 		enemySkin.setPosition(xPos, yPos);
 	}
