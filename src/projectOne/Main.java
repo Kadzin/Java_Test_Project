@@ -9,10 +9,12 @@ import java.nio.file.Paths;
 import org.jsfml.graphics.*;
 import org.jsfml.system.*;
 import projectOne.Player;
+import projectOne.Enemy;
+import projectOne.TileMap;
 
 public class Main {
-	//private static int heightMap = 16;
-	private static int widthMap = 16;
+	protected static int heightMap = 8;
+	protected static int widthMap = 16;
 	
 	/* Чистый шаблон 16х16
 
@@ -67,16 +69,18 @@ public class Main {
 	public static void main(String[] args) {		
 		
 		//Задаём параметры окна и создаём его
-		VideoMode vm = new VideoMode(1024, 512);
+		VideoMode vm = new VideoMode(1024, 640);
 		RenderWindow renderWindow = new RenderWindow(vm, "Test1", WindowStyle.CLOSE);
 		
-		//Создаем объект класса игрок
+		//Создаем объектs класса игрок
 		Player player = new Player();
+		Enemy enemy = new Enemy();
+		boolean flag = true;
 		
 		//Устанавливаем счётчки времени
 		//В будущем может понадобиться
-		Clock clock = new Clock();
-		float time;
+		/*Clock clock = new Clock();
+		float time;*/
 		
 		//Задаем спрайт карты
 		Texture mapTexture = new Texture();
@@ -92,12 +96,18 @@ public class Main {
 		int mouseX, mouseY, workField = 0;
 		boolean xFlag, yFlag;
 		
+		//Создаем объект класса окна информации персонажа
+		InfoWindow infoWindow = new InfoWindow();
+		
+		//jgkilo;kjhjvkl;
+		TileMap tileMapClass = new TileMap();
+		
 		//Всё что будет показано в окне будет в этом цикле
 		while (renderWindow.isOpen()){			
 			//Задаем параметры временного интервала
-			time = clock.getElapsedTime().asSeconds();
+			/*time = clock.getElapsedTime().asSeconds();
 			clock.restart();
-			time = time*500;
+			time = time*500;*/
 			
 			//Закрытие окна (если делать через wait, то программа стопается!)
 			for (Event myEvent : renderWindow.pollEvents()) {
@@ -109,25 +119,13 @@ public class Main {
 			if (Keyboard.isKeyPressed(Key.ESCAPE)) {
 				renderWindow.close();
 			}
-			if (Keyboard.isKeyPressed(Key.LEFT)) {
-				player.xSpeed = (float) -1;
-			}
-			if (Keyboard.isKeyPressed(Key.RIGHT)) {
-				player.xSpeed = (float) 1;
-			}
-			if (Keyboard.isKeyPressed(Key.UP)) {
-				player.ySpeed = (float) -1;
-			}
-			if (Keyboard.isKeyPressed(Key.DOWN)) {
-				player.ySpeed = (float) 1;
-			}
 			
 			//Чистим окно, красим всё в белый и устанавливаем mapSprite позицию в 0
 			renderWindow.clear(Color.WHITE);
 			mapSprite.setPosition(0, 0);
 			
 			//"Строим" tilemap по заданному выше шаблону
-			for (int h=0; h</*heightMap*/8; h++) {
+			for (int h=0; h<heightMap; h++) {
 				for (int w=0; w<widthMap; w++) {
 					if (tileMap[h][w]=="U") mapSprite.setTextureRect(new IntRect(64,0,64,64));
 					if (tileMap[h][w]=="D") mapSprite.setTextureRect(new IntRect(64,128,64,64));
@@ -158,7 +156,7 @@ public class Main {
 			if(vi.x<(player.xPos+64) & vi.x>(player.xPos-32)) workField+=1;
 			if(vi.y<(player.yPos+64) & vi.y>(player.yPos-32)) workField+=1;
 			if(workField==2) {		
-				//"Запоминаем" для дальнейшего импользования
+				//"Запоминаем" для дальнейшего использования
 				mouseX = vi.x/32;
 				mouseY = vi.y/32;
 				//Делим на 64(размера квадрата текстуры)
@@ -178,20 +176,41 @@ public class Main {
 					if (xFlag & !yFlag) mapSprite.setTextureRect(new IntRect(192,64,64,-64));
 					//Низ право
 					if (!xFlag & !yFlag) mapSprite.setTextureRect(new IntRect(256,64,-64,-64));
+					if (!Mouse.isButtonPressed(Button.LEFT)) {
+						flag = true;
+					}
 					//Обработчик движений по нажатию мышкой
-					if (Mouse.isButtonPressed(Button.LEFT)) {
-						player.xPos = mouseX*32;
-						player.yPos = mouseY*32;
-						player.update();
+					if (flag) {
+						if (Mouse.isButtonPressed(Button.LEFT)) {
+							player.xPos = mouseX*32;
+							player.yPos = mouseY*32;
+							player.update();
+							enemy.update(player.xPos, player.yPos);
+							flag=false;
+						}
 					}
 					mapSprite.setPosition(vi.x*64, vi.y*64);
 					renderWindow.draw(mapSprite);
 					workField=0;
 				}
+				if (tileMap[vi.y][vi.x]=="E") {
+					/*player.xPos = 128;
+					player.yPos = 128;
+					player.update();*/
+					if (Mouse.isButtonPressed(Button.LEFT)) {
+						player.xPos = 128;
+						player.yPos = 128;
+						player.update();
+						tileMap = tileMapClass.update();
+					}
+				}
 			}
+			
 			
 			//Блок отрисовки, рисуем всё что осталось нарисовать
 			renderWindow.draw(player.playerSkin);
+			renderWindow.draw(enemy.enemySkin);
+			renderWindow.draw(infoWindow.playerIcon);
 			//Дисплей обязательно указывать что бы отобразить всё то что будет в цикле
 			renderWindow.display();
 		}
