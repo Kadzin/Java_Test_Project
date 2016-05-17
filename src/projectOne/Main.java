@@ -75,6 +75,7 @@ public class Main {
 		//Создаем объектs класса игрок
 		Player player = new Player();
 		Enemy enemy = new Enemy();
+		Enemy enemy2 = new Enemy();
 		boolean flag = true;
 		
 		//Устанавливаем счётчки времени
@@ -186,6 +187,7 @@ public class Main {
 							player.yPos = mouseY*32;
 							player.update();
 							enemy.update(player.xPos, player.yPos);
+							enemy2.update(player.xPos, player.yPos);
 							flag=false;
 						}
 					}
@@ -198,8 +200,8 @@ public class Main {
 					player.yPos = 128;
 					player.update();*/
 					if (Mouse.isButtonPressed(Button.LEFT)) {
-						player.xPos = 128;
-						player.yPos = 128;
+						player.xPos = 512;
+						player.yPos = 256;
 						player.update();
 						tileMap = tileMapClass.update();
 					}
@@ -210,6 +212,7 @@ public class Main {
 			//Блок отрисовки, рисуем всё что осталось нарисовать
 			renderWindow.draw(player.playerSkin);
 			renderWindow.draw(enemy.enemySkin);
+			renderWindow.draw(enemy2.enemySkin);
 			renderWindow.draw(infoWindow.playerIcon);
 			//Дисплей обязательно указывать что бы отобразить всё то что будет в цикле
 			renderWindow.display();

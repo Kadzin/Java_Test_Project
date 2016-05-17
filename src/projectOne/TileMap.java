@@ -7,7 +7,7 @@ public class TileMap {
 	private static String mapDetailRet() {
 		String retTexturLetter;
 		Random random = new Random();
-		int randNum = random.nextInt(10);
+		int randNum = random.nextInt(5);
 		if (randNum == 0) {
 			retTexturLetter = "D";
 		}

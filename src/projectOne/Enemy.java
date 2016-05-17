@@ -4,18 +4,17 @@ import org.jsfml.graphics.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 import projectOne.Main;
+import java.util.Random;
 
 public class Enemy {
 	
 	//«адаЄм текстуру игрока, а так же его положение и скорость
 	Sprite enemySkin;
-	float xPos = 128, yPos = 128;
+	private float xPos = 128, yPos = 128;
 	IntRect intRect = new IntRect(0, 0, 32, 32);
 	private String[][] tileMapClass = Main.tileMap;
-	int xPosInt, yPosInt;
-		
-	//переменные из прошлой версии 
-	//float xSpeed = 0, ySpeed = 0;
+	private int n1, n2, count=1;
+	private Random rand = new Random();
 		
 	Enemy() {
 		Texture enemyTexture = new Texture();
@@ -34,32 +33,58 @@ public class Enemy {
 		enemySkin.setTextureRect(intRect);
 		enemySkin.setPosition(xPos, yPos);
 	}
+	//ћетод движени€ врага по карте
 	void update(float playerXpos, float playerYpos) {
+		//«агружаем текущую карту
 		tileMapClass = Main.tileMap;
-		/*playerXpos/=32;
-		playerYpos/=32;*/
-		float xx, yy;
-		xx = playerXpos - xPos;
-		yy = playerYpos - yPos;
-		if (xx > 0 ) {
-			xPos+=32;
-			xPosInt = (int) xPos/64;
-			if (tileMapClass[yPosInt][xPosInt] != " ") xPos-=32;
+		//≈сли на расто€ни 2ух клеток нет игрока, то двигаетс€ рандомно
+		if (xPos - playerXpos < -64 | xPos - playerXpos > 64 | yPos - playerYpos < -64 | yPos - playerYpos > 64) {
+			count-=1;
+			if (count==0) {
+				n1 = rand.nextInt(2);
+				n2 = rand.nextInt(2);
+				count=rand.nextInt(3)+2;
 			}
-		if (xx < 0 ) {
-			xPos-=32;
-			xPosInt = (int) xPos/64;
-			if (tileMapClass[yPosInt][xPosInt] != " ") xPos+=32;
-		}
-		if (yy > 0 ) {
-			yPos+=32;
-			yPosInt = (int) yPos/64;
-			if (tileMapClass[yPosInt][xPosInt] != " ") yPos-=32;
-		}
-		if (yy < 0 ) {
-			yPos-=32;
-			yPosInt = (int) yPos/64;
-			if (tileMapClass[yPosInt][xPosInt] != " ") yPos+=32;
+			if (n1 == 1) {
+				if (n2 == 0) {
+					yPos-=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") yPos+=32;
+				}
+				else {
+					yPos+=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") yPos-=32;
+				}
+			}
+			else {
+				if (n2 == 1) {
+					xPos-=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") xPos+=32;
+				}
+				else {
+					xPos+=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") xPos-=32;
+				}
+			}
+			//≈сли на расто€нии 2ух клеток есть игрок то двигатьс€ за ним но не "наступать на него.
+		} else {
+			if (xPos - playerXpos < -32 | xPos - playerXpos > 32 | yPos - playerYpos < -32 | yPos - playerYpos > 32) {
+				if (playerXpos - xPos > 0 ) {
+					xPos+=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") xPos-=32;
+				}
+				if (playerXpos - xPos < 0 ) {
+					xPos-=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") xPos+=32;
+				}
+				if (playerYpos - yPos > 0 ) {
+					yPos+=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") yPos-=32;
+				}
+				if (playerYpos - yPos < 0 ) {
+					yPos-=32;
+					if (tileMapClass[(int) (yPos/64)][(int) (xPos/64)] != " ") yPos+=32;
+				}
+			}
 		}
 		enemySkin.setPosition(xPos, yPos);
 	}
